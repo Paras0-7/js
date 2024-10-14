@@ -839,3 +839,613 @@ Both Object-Oriented Programming (OOP) and Functional Programming (FP) are found
 ### **Conclusion**
 
 Both Object-Oriented Programming and Functional Programming have their own principles that guide how developers create software. While OOP is centered around modeling real-world entities through objects, FP emphasizes functions as first-class citizens and promotes immutability and pure functions. Understanding these principles helps developers choose the right approach for their projects based on the problem domain and specific requirements.
+
+
+
+# 7. what is REST API, how does it work, what are its principles
+
+### What is REST API?
+
+A **REST API** (Representational State Transfer Application Programming Interface) is a set of conventions for building and interacting with web services. REST is an architectural style that relies on stateless communication and is designed to take advantage of existing protocols, particularly HTTP. It provides a way for different systems to communicate over the web, typically in a simple and standardized way.
+
+### How Does REST API Work?
+
+REST APIs work based on the following principles:
+
+1. **Resources**: 
+   - In REST, every piece of data (or resource) is represented by a unique URL. For example, a user resource could be accessed at `https://api.example.com/users/1`.
+   - Resources can be any type of object, data, or service that can be accessed and manipulated.
+
+2. **HTTP Methods**: 
+   - REST APIs utilize standard HTTP methods to perform operations on resources. The most commonly used methods are:
+     - **GET**: Retrieve data from the server (read).
+     - **POST**: Send data to the server to create a new resource (create).
+     - **PUT**: Update an existing resource or create a new one if it doesn’t exist (update).
+     - **PATCH**: Apply partial modifications to a resource (update).
+     - **DELETE**: Remove a resource from the server (delete).
+
+3. **Stateless Communication**: 
+   - Each request from the client to the server must contain all the information the server needs to fulfill that request. The server does not store any session data, making each interaction independent.
+
+4. **Client-Server Architecture**: 
+   - The client (front-end application) and server (back-end service) are separate entities. The client is responsible for the user interface, while the server handles the business logic and data management.
+
+5. **Representation**: 
+   - Resources can be represented in various formats, with JSON (JavaScript Object Notation) being the most common. Other formats like XML, HTML, and plain text can also be used.
+   - The client and server can negotiate the format of the data through HTTP headers.
+
+6. **Statelessness**: 
+   - REST APIs do not maintain a client state on the server side. This makes the API scalable and improves performance since each request is independent.
+
+7. **HATEOAS (Hypermedia as the Engine of Application State)**: 
+   - Although not always strictly followed, HATEOAS is a principle that suggests that a client should be able to navigate the API dynamically by following links provided in the API responses.
+
+### Principles of REST API
+
+REST APIs are guided by a set of principles that help maintain a uniform architecture:
+
+1. **Uniform Interface**: 
+   - A consistent way of interacting with the API, allowing for easy understanding and usage. This is achieved through standard methods and predictable URLs.
+
+2. **Client-Server Separation**: 
+   - The client and server can evolve independently. Changes on the server do not require changes on the client, and vice versa.
+
+3. **Statelessness**: 
+   - Each request from the client must contain all the information needed to process the request. This simplifies the server design and improves scalability.
+
+4. **Cacheability**: 
+   - Responses from the server should define themselves as cacheable or non-cacheable to improve performance and reduce server load.
+
+5. **Layered System**: 
+   - REST APIs can be organized into layers (e.g., client, server, cache, etc.). A client does not need to know whether it is connected directly to the server or an intermediary.
+
+6. **Code on Demand (optional)**: 
+   - Servers can extend client functionality by transferring executable code (e.g., JavaScript). This is optional and not commonly used.
+
+### Conclusion
+
+REST APIs provide a flexible and efficient way to create and interact with web services. By following the principles of REST, developers can build APIs that are easy to use, maintain, and scale. They allow for seamless communication between different systems and can be used in a wide variety of applications, from web apps to mobile apps and beyond.
+
+
+# 8. How can we achieve real time communication between client and server
+
+Achieving real-time communication between a client and a server can be accomplished through various technologies and methods. Here are some popular approaches:
+
+### 1. **WebSockets**
+
+- **Overview**: WebSockets provide a full-duplex communication channel over a single, long-lived connection. Unlike HTTP, which follows a request-response model, WebSockets allow the server to push data to the client whenever an event occurs.
+  
+- **How It Works**: 
+  - The client establishes a connection to the server using the WebSocket protocol.
+  - Once the connection is established, both the client and server can send messages independently.
+  - This is particularly useful for applications like chat apps, live notifications, or gaming where low latency is crucial.
+
+- **Example**:
+  ```javascript
+  // Client-side
+  const socket = new WebSocket('ws://yourserver.com/socket');
+
+  socket.onopen = () => {
+    console.log('Connected to server');
+    socket.send('Hello Server!');
+  };
+
+  socket.onmessage = (event) => {
+    console.log(`Message from server: ${event.data}`);
+  };
+
+  // Server-side (Node.js example using 'ws' library)
+  const WebSocket = require('ws');
+  const wss = new WebSocket.Server({ port: 8080 });
+
+  wss.on('connection', (ws) => {
+    console.log('Client connected');
+    
+    ws.on('message', (message) => {
+      console.log(`Received: ${message}`);
+      ws.send('Hello Client!');
+    });
+  });
+  ```
+
+### 2. **Server-Sent Events (SSE)**
+
+- **Overview**: SSE is a one-way communication channel from the server to the client over HTTP. It's useful for sending updates or notifications without requiring the client to poll the server.
+
+- **How It Works**: 
+  - The client makes a request to the server, which responds with a stream of updates.
+  - The connection remains open, allowing the server to send messages as they become available.
+
+- **Example**:
+  ```javascript
+  // Client-side
+  const eventSource = new EventSource('http://yourserver.com/events');
+
+  eventSource.onmessage = (event) => {
+    console.log(`New message: ${event.data}`);
+  };
+
+  // Server-side (Node.js example)
+  const express = require('express');
+  const app = express();
+
+  app.get('/events', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+
+    setInterval(() => {
+      res.write(`data: ${new Date().toISOString()}\n\n`);
+    }, 1000); // Send current time every second
+  });
+
+  app.listen(3000);
+  ```
+
+### 3. **Long Polling**
+
+- **Overview**: Long polling is a technique where the client requests information from the server and the server holds the request open until new data is available. Once data is sent, the client immediately sends a new request.
+
+- **How It Works**:
+  - The client sends a request to the server.
+  - If the server has data, it responds immediately; if not, it keeps the request open until it has data or a timeout occurs.
+  - Once the client receives data, it sends a new request to keep the process going.
+
+- **Example**:
+  ```javascript
+  // Client-side
+  function longPoll() {
+    fetch('http://yourserver.com/long-poll')
+      .then(response => response.json())
+      .then(data => {
+        console.log(`Received data: ${data}`);
+        longPoll(); // Start a new long poll request
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setTimeout(longPoll, 5000); // Retry after a delay if error occurs
+      });
+  }
+
+  longPoll();
+
+  // Server-side (Node.js example)
+  const express = require('express');
+  const app = express();
+
+  app.get('/long-poll', (req, res) => {
+    // Simulating a delay before sending a response
+    setTimeout(() => {
+      res.json({ message: 'Hello Client!' });
+    }, 10000); // Wait 10 seconds before responding
+  });
+
+  app.listen(3000);
+  ```
+
+### 4. **Third-Party Services (e.g., Firebase, Socket.io)**
+
+- **Overview**: Many third-party services and libraries can simplify real-time communication.
+  - **Firebase**: A cloud platform that provides real-time database capabilities and easy integration with front-end frameworks.
+  - **Socket.io**: A library that enables real-time, bidirectional communication between clients and servers, using WebSockets and fallback options (like polling) when necessary.
+
+- **Example with Socket.io**:
+  ```javascript
+  // Client-side
+  const socket = io('http://yourserver.com');
+
+  socket.on('connect', () => {
+    console.log('Connected to server');
+  });
+
+  socket.on('message', (data) => {
+    console.log(`New message: ${data}`);
+  });
+
+  // Server-side (Node.js example using Socket.io)
+  const express = require('express');
+  const http = require('http');
+  const socketIo = require('socket.io');
+
+  const app = express();
+  const server = http.createServer(app);
+  const io = socketIo(server);
+
+  io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('sendMessage', (msg) => {
+      io.emit('message', msg); // Broadcast message to all connected clients
+    });
+  });
+
+  server.listen(3000);
+  ```
+
+### Conclusion
+
+Real-time communication between clients and servers can be achieved using various techniques, each suited for different use cases. WebSockets are ideal for interactive applications, SSE is great for unidirectional updates, and long polling provides a simpler fallback. Third-party libraries like Socket.io and platforms like Firebase can significantly reduce the complexity of implementing real-time features. Choose the method that best fits your application's requirements and architecture.
+
+
+
+# 9. Authentication process overview from frontend point of view and from BE point of view
+
+### Authentication Process Overview
+
+Authentication is the process of verifying the identity of a user or system. It typically involves a series of steps that take place on both the front end (client side) and the back end (server side). Below is an overview of the authentication process from both perspectives.
+
+### 1. Frontend Perspective
+
+The frontend is responsible for interacting with the user, collecting their credentials, and managing authentication states. Here’s how the process typically works:
+
+#### a. User Registration
+- **User Interface**: The user fills out a registration form with details like username, email, and password.
+- **Validation**: The client performs client-side validation (e.g., checking if the password meets complexity requirements).
+- **Sending Request**: Upon form submission, a POST request is sent to the server’s registration endpoint with the user data.
+
+#### b. User Login
+- **Login Form**: The user enters their credentials (username/email and password).
+- **Validation**: Similar to registration, client-side validation occurs.
+- **Sending Request**: A POST request is sent to the server’s login endpoint with the entered credentials.
+  
+#### c. Handling Response
+- **Success Response**: If authentication is successful, the server typically returns an access token (JWT) or session ID.
+- **Error Handling**: If authentication fails (e.g., incorrect credentials), an error message is displayed to the user.
+
+#### d. Storing Authentication State
+- **Token Storage**: The access token is stored in the browser (e.g., in `localStorage`, `sessionStorage`, or cookies).
+- **State Management**: The application updates its state (e.g., using React state, Redux) to reflect that the user is authenticated.
+
+#### e. Protected Routes
+- **Routing**: The frontend checks the authentication state to control access to protected routes (e.g., using a route guard or middleware).
+- **Token Renewal**: If using JWTs, the application may periodically refresh tokens or handle token expiration (e.g., by redirecting to the login page).
+
+### 2. Backend Perspective
+
+The backend is responsible for managing user data, verifying credentials, and generating authentication tokens. Here’s how the process typically works:
+
+#### a. User Registration
+- **Receiving Request**: The server receives the registration request with user details.
+- **Validation**: The server performs validation (e.g., checking if the username is unique, validating password strength).
+- **Storing User**: If valid, the server hashes the password (using bcrypt, for example) and stores the user data in the database.
+- **Response**: A success response is sent back to the client.
+
+#### b. User Login
+- **Receiving Request**: The server receives the login request with the user's credentials.
+- **Credential Verification**: 
+  - The server retrieves the user record from the database using the provided username/email.
+  - It then compares the hashed password stored in the database with the provided password (using bcrypt’s compare method).
+- **Generating Token**: 
+  - If authentication is successful, the server generates an access token (usually a JWT) containing user information and an expiration time.
+  - The token is signed using a secret key for security.
+- **Response**: The access token is sent back to the client in the response.
+
+#### c. Token Verification for Protected Routes
+- **Receiving Request**: For requests to protected routes, the server checks for the presence of the access token in the request headers.
+- **Token Validation**: 
+  - The server verifies the token’s signature and checks if it has expired.
+  - If valid, it allows access to the protected resource and may retrieve user data based on the token.
+  - If invalid or expired, it returns an appropriate error response (e.g., `401 Unauthorized`).
+
+#### d. Logout Process
+- **Receiving Logout Request**: The server may handle logout requests by invalidating the token on the server-side (if using session-based auth) or instructing the client to remove the token.
+- **Response**: A success response is sent back to the client, and the frontend updates the UI accordingly.
+
+### Summary
+
+The authentication process involves collaborative efforts between the frontend and backend. The frontend handles user interactions, data submission, and state management, while the backend is responsible for data validation, token generation, and securing access to protected resources. Together, they create a secure and seamless user experience during authentication.
+
+
+# 10. How can we measure performance of our application. What are metrics used for the same.
+
+Measuring the performance of an application involves evaluating various metrics that provide insights into its speed, responsiveness, and overall efficiency. Here are some key metrics and methods to measure application performance:
+
+### Key Performance Metrics
+
+1. **Response Time**
+   - **Definition**: The time taken for the server to respond to a client request.
+   - **Measurement**: Measured in milliseconds (ms), it can be tracked for individual requests, average response time for a set of requests, or response times for various endpoints.
+
+2. **Throughput**
+   - **Definition**: The number of requests that can be processed by the server in a given time frame.
+   - **Measurement**: Measured in requests per second (RPS), it indicates the capacity of the application to handle concurrent users.
+
+3. **Error Rate**
+   - **Definition**: The percentage of requests that result in an error.
+   - **Measurement**: Calculated as (Number of Errors / Total Requests) * 100. High error rates may indicate problems in the application or server.
+
+4. **Latency**
+   - **Definition**: The time it takes for a request to travel from the client to the server and back.
+   - **Measurement**: Measured in milliseconds, it can be affected by network conditions, server performance, and application efficiency.
+
+5. **Resource Utilization**
+   - **Definition**: The extent to which system resources (CPU, memory, disk I/O, and network) are being used.
+   - **Measurement**: Monitored through system-level metrics, such as CPU usage percentage, memory usage, disk read/write rates, and network bandwidth utilization.
+
+6. **Page Load Time**
+   - **Definition**: The total time taken for a web page to load completely.
+   - **Measurement**: Measured in seconds, it includes time to first byte (TTFB), time to render the page, and time for all resources to load.
+
+7. **Time to First Byte (TTFB)**
+   - **Definition**: The time it takes for the browser to receive the first byte of data from the server after making a request.
+   - **Measurement**: Measured in milliseconds, it reflects server processing speed and network latency.
+
+8. **Apdex Score**
+   - **Definition**: A measure of user satisfaction based on response times.
+   - **Measurement**: The score ranges from 0 to 1, where 1 indicates that all users are satisfied with the response time, while lower scores indicate dissatisfaction.
+
+9. **Session Duration**
+   - **Definition**: The total time a user spends interacting with the application during a single session.
+   - **Measurement**: Measured in minutes or seconds, it can provide insights into user engagement.
+
+10. **Concurrent Users**
+    - **Definition**: The number of users accessing the application simultaneously.
+    - **Measurement**: Important for understanding how the application scales under load.
+
+### Tools for Measuring Application Performance
+
+1. **Performance Monitoring Tools**:
+   - **Google Lighthouse**: An open-source tool for measuring web performance metrics like load time, TTFB, and overall performance scores.
+   - **New Relic**: A comprehensive monitoring tool that provides insights into application performance, including transaction times, error rates, and resource utilization.
+   - **Datadog**: A monitoring and analytics platform that tracks application performance metrics, logs, and traces.
+
+2. **Load Testing Tools**:
+   - **Apache JMeter**: An open-source tool for load testing web applications to measure performance under heavy traffic.
+   - **Gatling**: A load testing tool designed for ease of use and high performance, suitable for testing web applications and APIs.
+
+3. **Profiling Tools**:
+   - **Chrome DevTools**: Built into the Chrome browser, it provides insights into page load times, rendering performance, and network activity.
+   - **Node.js Profilers**: Tools like Clinic.js or Node.js built-in profiler can help measure performance metrics specific to Node.js applications.
+
+4. **Logging and Analytics**:
+   - **Google Analytics**: Can provide insights into user behavior, page load times, and session durations.
+   - **ELK Stack (Elasticsearch, Logstash, Kibana)**: A powerful logging solution that can be used to monitor application logs and performance metrics.
+
+### Conclusion
+
+Measuring application performance is critical for ensuring a responsive and efficient user experience. By tracking various metrics such as response time, throughput, error rates, and resource utilization, developers can identify performance bottlenecks and make data-driven decisions to enhance application performance. Using a combination of monitoring tools, load testing, and profiling can help maintain optimal application performance in real-world conditions.
+
+
+# 11. React Profiller
+
+The **React Profiler** is a tool that helps developers analyze the performance of their React applications. It provides insights into how components render and re-render, allowing you to identify performance bottlenecks and optimize your app's performance. Here’s an overview of the React Profiler, including how to use it and what metrics it provides.
+
+### Key Features of React Profiler
+
+1. **Component Rendering Time**:
+   - The Profiler tracks how long each component takes to render, which helps identify components that may be slow or inefficient.
+
+2. **Render Counts**:
+   - It shows how many times each component rendered during a specific period, indicating how frequently components are updating.
+
+3. **Interaction Tracking**:
+   - You can profile specific interactions (e.g., button clicks, form submissions) to see how they affect performance.
+
+4. **Component Tree Visualization**:
+   - The Profiler provides a visual representation of the component tree, making it easier to understand the relationships between components.
+
+### How to Use React Profiler
+
+#### 1. Enabling the Profiler
+
+You can enable the Profiler in two ways:
+
+**a. Using the Profiler Component**:
+Wrap your components with the `<Profiler>` component provided by React. Here’s how to use it:
+
+```javascript
+import React, { Profiler } from 'react';
+
+const onRenderCallback = (id, phase, actualDuration, baseDuration, startTime, commitTime, interactions) => {
+  console.log({ id, phase, actualDuration, baseDuration, startTime, commitTime, interactions });
+};
+
+const MyComponent = () => {
+  return (
+    <Profiler id="MyComponent" onRender={onRenderCallback}>
+      <div>
+        {/* Your component content */}
+      </div>
+    </Profiler>
+  );
+};
+```
+
+**b. Using React Developer Tools**:
+You can also use the React Developer Tools extension for Chrome or Firefox. After installing the extension, enable the Profiler tab, and start recording performance.
+
+#### 2. Interpreting Profiler Data
+
+When using the Profiler, you’ll receive various metrics for each component:
+
+- **`actualDuration`**: The time it took to render the component during this render.
+- **`baseDuration`**: The estimated time it would take to render the component without memoization or other optimizations.
+- **`startTime`**: The timestamp when the render started.
+- **`commitTime`**: The timestamp when the changes were committed to the DOM.
+- **`interactions`**: A list of interactions that were active during the render.
+
+#### 3. Analyzing Performance
+
+- **Identify Bottlenecks**: Look for components with high `actualDuration` values or frequent renders (high render counts).
+- **Optimize Components**: Consider using `React.memo`, `useMemo`, or `useCallback` to prevent unnecessary re-renders of components.
+- **Batch State Updates**: Group multiple state updates in a single render to reduce rendering time.
+- **Lazy Loading**: Load components only when needed using React’s `React.lazy()` and `Suspense`.
+
+### Best Practices
+
+- **Use the Profiler in Development**: The Profiler should be used in development mode, as it can impact performance if used in production.
+- **Profile Specific Interactions**: Focus on profiling specific interactions to understand how they affect performance, rather than profiling the entire app.
+- **Combine with Other Tools**: Use the Profiler in conjunction with other performance monitoring tools (like Lighthouse or New Relic) for a comprehensive analysis.
+
+### Conclusion
+
+The React Profiler is a powerful tool for understanding and improving the performance of your React applications. By analyzing rendering times and identifying performance bottlenecks, you can optimize your components and enhance the overall user experience. Whether you use the Profiler component or the React Developer Tools, it's an invaluable asset in the development process.
+
+
+
+# 12. What is reflow and repaint
+
+**Reflow** and **repaint** are two important concepts in the context of web browser rendering that relate to how changes in the DOM (Document Object Model) affect the visual representation of a web page. Understanding these processes is crucial for optimizing web performance and ensuring a smooth user experience.
+
+### Reflow
+
+**Reflow** (also known as layout) occurs when the browser needs to recalculate the positions and sizes of elements in the document. This happens when:
+
+1. **DOM Changes**: Adding, removing, or modifying elements in the DOM.
+2. **Style Changes**: Changing CSS properties that affect the layout, such as width, height, margin, padding, and positioning.
+3. **Viewport Changes**: Resizing the browser window or changing the orientation of a device (e.g., rotating a mobile device).
+4. **Font Changes**: Changing font sizes or loading new fonts.
+
+#### Impact of Reflow
+- **Performance**: Reflow can be an expensive operation, especially if it affects a large number of elements. If multiple elements are affected, it can lead to multiple reflows, which can significantly degrade performance.
+- **Visual Update**: Once the reflow is complete, the browser calculates the new layout of the affected elements, preparing them for the next rendering phase.
+
+### Repaint
+
+**Repaint** occurs when changes to the DOM do not affect the layout of elements but do require the browser to redraw them. This happens when:
+
+1. **Style Changes**: Changing CSS properties that affect visibility or color, such as `background-color`, `color`, `visibility`, `opacity`, etc., but do not affect the layout.
+2. **Images**: Changing the source of an image or its visibility.
+
+#### Impact of Repaint
+- **Performance**: Repaint is generally less expensive than reflow because it does not involve recalculating the layout. However, frequent repaints can still impact performance, especially if the rendering engine needs to redraw a large number of pixels.
+- **Visual Update**: After a repaint, the updated visual representation is displayed on the screen.
+
+### Key Differences
+
+| Aspect      | Reflow                                      | Repaint                                      |
+|-------------|---------------------------------------------|----------------------------------------------|
+| Definition  | Layout recalculation affecting positions/sizes of elements | Redrawing elements without layout changes    |
+| Causes      | DOM changes, style changes affecting layout, viewport changes | Style changes not affecting layout (e.g., color changes) |
+| Performance | More expensive, can affect large sections of the page | Less expensive, typically affects only a small area |
+| Result      | New layout calculated and rendered          | Updated visual representation displayed      |
+
+### Best Practices for Minimizing Reflow and Repaint
+
+1. **Batch DOM Manipulations**: Make multiple changes to the DOM in a single operation rather than one at a time to minimize the number of reflows.
+2. **Use CSS Classes**: Instead of modifying styles directly with JavaScript, toggle CSS classes to apply styles, reducing layout recalculation.
+3. **Minimize Layout Thrashing**: Avoid reading layout properties (like `offsetHeight`) immediately after writing to the DOM. This can cause the browser to perform synchronous reflows.
+4. **Use CSS Transitions and Animations**: Utilize CSS for transitions and animations instead of JavaScript, as CSS can be optimized better by the browser.
+5. **Optimize Images and Media**: Load images and other media in a way that minimizes layout shifts.
+
+### Conclusion
+
+Understanding reflow and repaint is crucial for optimizing web application performance. By minimizing the frequency and extent of these processes, developers can enhance the user experience, making web applications faster and more responsive.
+
+
+
+
+# 13. Difference between SSR and CSR
+
+
+**Server-Side Rendering (SSR)** and **Client-Side Rendering (CSR)** are two approaches to rendering web applications. Each method has its advantages and disadvantages, and the choice between them depends on the specific needs of the application. Here’s a detailed comparison:
+
+### Server-Side Rendering (SSR)
+
+**Definition**: In SSR, the server generates the HTML content for each page request and sends it to the client (browser). The server renders the initial view of the application, which is then displayed to the user.
+
+#### How It Works:
+1. The client makes a request for a web page.
+2. The server processes the request and generates the complete HTML page.
+3. The server sends the fully rendered HTML to the client.
+4. The browser displays the HTML to the user.
+5. Subsequent interactions may require additional requests to the server for new content.
+
+#### Advantages of SSR:
+- **Faster Initial Load**: The user receives a fully rendered page, leading to faster perceived performance on the first load.
+- **SEO-Friendly**: Since search engine crawlers can easily read the server-rendered HTML, SSR is better for SEO.
+- **Improved Performance on Slow Devices**: Offloading rendering to the server can lead to better performance on less powerful devices.
+
+#### Disadvantages of SSR:
+- **Increased Server Load**: Rendering pages on the server can lead to higher CPU and memory usage, especially under heavy traffic.
+- **Latency**: Every request requires a round trip to the server, which can introduce latency.
+- **Limited Interactivity**: After the initial load, client-side interactivity may require additional requests to the server.
+
+### Client-Side Rendering (CSR)
+
+**Definition**: In CSR, the server sends a minimal HTML shell to the client, and JavaScript is responsible for rendering the content. The client loads the necessary JavaScript files and renders the pages in the browser.
+
+#### How It Works:
+1. The client makes a request for a web page.
+2. The server sends back a minimal HTML document along with JavaScript files.
+3. The browser downloads and executes the JavaScript, which dynamically generates and inserts content into the HTML.
+4. Subsequent interactions can occur entirely on the client side, often through AJAX requests for data.
+
+#### Advantages of CSR:
+- **Reduced Server Load**: Most rendering happens on the client side, which can reduce the server's workload.
+- **Rich Interactivity**: Client-side applications can provide a more dynamic and interactive user experience with smoother transitions and updates.
+- **Faster Subsequent Loads**: After the initial load, navigating between pages is usually faster because only data is fetched, not the entire HTML.
+
+#### Disadvantages of CSR:
+- **Slower Initial Load**: The initial loading time can be longer because the browser must download JavaScript and render the content.
+- **SEO Challenges**: Search engine crawlers may struggle with JavaScript-heavy applications, leading to potential SEO issues.
+- **Dependency on JavaScript**: If JavaScript fails or is disabled, the application may not function correctly.
+
+### Key Differences
+
+| Aspect                    | Server-Side Rendering (SSR)         | Client-Side Rendering (CSR)          |
+|---------------------------|-------------------------------------|--------------------------------------|
+| Rendering Location         | Server                              | Client (Browser)                     |
+| Initial Load Time         | Generally faster, fully rendered HTML | Can be slower due to JS loading      |
+| SEO                        | Better for SEO                      | May require additional effort        |
+| Server Load               | Higher, as pages are rendered on server | Lower, as rendering occurs on client |
+| Interactivity              | Limited until the page is fully loaded | Highly interactive                   |
+| Subsequent Page Loads      | Requires server round trips         | Faster, often just data fetching     |
+| Content Fetching          | Full page loads for every request   | AJAX requests for data as needed    |
+
+### Conclusion
+
+Choosing between SSR and CSR depends on the specific requirements of your application. SSR is often preferred for content-heavy applications that require good SEO and fast initial load times, while CSR is well-suited for applications that need rich interactivity and dynamic content updates. In many cases, a hybrid approach combining both SSR and CSR (like Next.js) can be an effective solution.
+
+
+
+# 14. What is functional requirement and non functional requirement. Difference between them.
+
+**Functional requirements** and **non-functional requirements** are two essential categories of requirements in software development. They serve different purposes and describe different aspects of a system. Here’s a breakdown of each, along with their differences.
+
+### Functional Requirements
+
+**Definition**: Functional requirements specify what the system should do. They describe the specific behaviors, functions, and features that the system must exhibit to satisfy the user's needs and requirements.
+
+#### Characteristics:
+- **Behavioral**: Focus on the actions that the system should perform.
+- **User-Centric**: Derived from user needs and expectations.
+- **Detailed**: Can include inputs, outputs, and system interactions.
+
+#### Examples:
+- The system shall allow users to log in with a username and password.
+- The application shall send a confirmation email after a user completes a purchase.
+- Users shall be able to filter search results by date, category, or relevance.
+- The system shall generate a report of user activities at the end of each month.
+
+### Non-Functional Requirements
+
+**Definition**: Non-functional requirements specify how the system should behave. They define the quality attributes, system performance, and constraints under which the system operates.
+
+#### Characteristics:
+- **Quality Attributes**: Focus on aspects like performance, security, usability, reliability, and maintainability.
+- **System-Centric**: More about how the system performs its functions rather than what it does.
+- **Broad**: Can encompass various factors that impact user experience and system efficiency.
+
+#### Examples:
+- The system shall respond to user requests within 2 seconds (performance).
+- The application shall be able to handle 1000 concurrent users (scalability).
+- The software shall be available 99.9% of the time (availability).
+- The user interface shall be accessible according to WCAG 2.1 standards (usability).
+
+### Key Differences
+
+| Aspect                     | Functional Requirements                             | Non-Functional Requirements                             |
+|----------------------------|----------------------------------------------------|--------------------------------------------------------|
+| Definition                 | Specify what the system should do                  | Specify how the system should behave                   |
+| Focus                      | Functions, features, and behaviors                  | Quality attributes and constraints                      |
+| Examples                   | User login, data entry, report generation          | Performance, security, usability                        |
+| Measurement                | Typically measurable through testing                | Often measured using metrics or standards              |
+| User Interaction           | Directly related to user actions and interactions   | Affect user experience indirectly through system behavior|
+| Scope                      | Narrower, focusing on specific functions            | Broader, encompassing overall system characteristics    |
+
+### Conclusion
+
+Understanding the distinction between functional and non-functional requirements is crucial for effective software development. Functional requirements guide developers in creating specific features and functionalities, while non-functional requirements ensure that the system operates effectively, efficiently, and meets quality standards. Both types of requirements are essential for delivering a successful software product that satisfies user needs and expectations.
+
+
+
