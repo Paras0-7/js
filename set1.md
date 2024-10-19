@@ -693,21 +693,113 @@ Both Object-Oriented Programming (OOP) and Functional Programming (FP) are found
 
 4. **Polymorphism**:
 
-   - **Definition**: The ability for different classes to be treated as instances of the same class through a common interface, allowing methods to perform differently based on the object type.
+   - **Definition**: It allows a method or an object to take on many forms. Polymorphism enables flexibility and reusability by letting a single interface or method work with different types.
+
+   - ** Types** : Types of Polymorphism in Java
+     Compile-time Polymorphism (Static Polymorphism):
+     Achieved through method overloading.
+     The method to be executed is determined at compile time.
+     Runtime Polymorphism (Dynamic Polymorphism):
+     Achieved through method overriding.
+     The method to be executed is determined at runtime based on the object type.
    - **Purpose**: To enable flexibility and the ability to invoke methods on objects of different classes without knowing their specific types.
-   - **Example**: A common `speak` method for different animals.
+   - **Example**: ### **Types of Polymorphism in Java**
 
-   ```javascript
-   function makeAnimalSpeak(animal) {
-     animal.speak(); // Works with any object that has a speak method
-   }
+5. **Compile-time Polymorphism (Static Polymorphism):**
+   - Achieved through **method overloading**.
+   - The method to be executed is **determined at compile time**.
+6. **Runtime Polymorphism (Dynamic Polymorphism):**
+   - Achieved through **method overriding**.
+   - The method to be executed is **determined at runtime** based on the object type.
 
-   const dog = new Dog();
-   const cat = new Cat(); // Assuming Cat also extends Animal
+---
 
-   makeAnimalSpeak(dog); // Output: Woof!
-   makeAnimalSpeak(cat); // Output: Meow!
-   ```
+## **1. Compile-time Polymorphism (Method Overloading)**
+
+Method **overloading** occurs when multiple methods in the **same class** have the **same name** but **different parameters** (by type or number).
+
+#### **Example of Method Overloading:**
+
+```java
+class Calculator {
+    // Method to add two integers
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    // Method to add three integers
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+
+    // Method to add two double values
+    double add(double a, double b) {
+        return a + b;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+
+        System.out.println(calc.add(5, 10));        // Output: 15
+        System.out.println(calc.add(1, 2, 3));      // Output: 6
+        System.out.println(calc.add(3.5, 2.5));     // Output: 6.0
+    }
+}
+```
+
+#### **Explanation:**
+
+- All the `add()` methods have the **same name**, but different **parameters**.
+- Java decides which method to invoke **at compile time** based on the number or type of arguments.
+
+---
+
+## **2. Runtime Polymorphism (Method Overriding)**
+
+Method **overriding** happens when a **subclass provides a specific implementation** of a method already defined in its **superclass**. The method call is **resolved at runtime** based on the **object's actual type**.
+
+#### **Example of Method Overriding:**
+
+```java
+class Animal {
+    void sound() {
+        System.out.println("Animals make sound");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Dog barks");
+    }
+}
+
+class Cat extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Cat meows");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Animal myDog = new Dog();  // Polymorphic reference
+        Animal myCat = new Cat();  // Polymorphic reference
+
+        myDog.sound();  // Output: Dog barks
+        myCat.sound();  // Output: Cat meows
+    }
+}
+```
+
+#### **Explanation:**
+
+- The `sound()` method is overridden in both the `Dog` and `Cat` classes.
+- Although the references are of type `Animal`, the **correct overridden method** is called at **runtime** based on the **actual type of the object** (`Dog` or `Cat`).
+
+---
 
 ---
 
