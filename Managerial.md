@@ -102,17 +102,22 @@ My vision for the team's future is to foster an innovative, collaborative, and h
 
 ## 21 How do you deal with team members who don't complete tasks?
 
-Identify the root cause
+### Identify the root cause
+
 Before you confront the team member, try to understand why they are not completing tasks. Is it a lack of skills, resources, or clarity? Are they overwhelmed, distracted, or disengaged? Do they have personal or professional challenges that affect their work? Asking open-ended questions and listening empathetically can help you uncover the root cause and show that you care.
 
-Set clear expectations and consequences
+### Set clear expectations and consequences
+
 Once you have identified the root cause, you need to set clear expectations and consequences for the team member. Explain what the task is, why it is important, and when it is due. Specify the quality standards, the feedback process, and the communication channels. Also, make it clear what will happen if they don't complete the task, such as missed deadlines, poor reviews, or disciplinary actions. Be firm but fair, and document the agreement.
 
-Provide support and feedback
+### Provide support and feedback
+
 After setting the expectations and consequences, you need to provide support and feedback to the team member. Offer them the resources, training, or coaching they need to complete the task. Check in regularly and monitor their progress. Acknowledge their efforts and achievements, and provide constructive feedback and guidance. If they are still struggling, offer them additional help or adjust the task accordingly.
 
-Delegate or reassign the task
+### Delegate or reassign the task
+
 If the team member still fails to complete the task, despite your support and feedback, you may need to delegate or reassign the task to someone else. This may be a temporary or permanent solution, depending on the situation and the team member's performance. Explain to the team member why you are delegating or reassigning the task, and how it affects their role and responsibilities. Also, communicate with the rest of the team and ensure a smooth transition.
 
-Review and reflect
+### Review and reflect
+
 Finally, you need to review and reflect on the situation and the outcome. Evaluate the team member's performance and behavior, and provide them with feedback and recognition. If they have improved, praise them and encourage them to keep up the good work. If they have not improved, discuss the next steps and actions. Also, reflect on your own leadership and delegation skills, and identify what you can do better in the future.
